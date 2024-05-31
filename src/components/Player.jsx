@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { usePlayerStore } from "@/store/playerStore";
+import { useEffect, useRef, useState } from "react";
 
 export const Pause = ({ className }) => (
   <svg className={className} role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" >
@@ -27,19 +28,22 @@ export const Volume = () => (
   </svg>
 );
 export const Player = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { isPlaying, setIsPlaying } = usePlayerStore((state) => state);
+
   const [currentSong, setCurrentSong] = useState(null);
   const audioRef = useRef();
 
+  useEffect(() => {
+    audioRef.current.src = `/music/1/01.mp3`;
+  }, [])
+    
   const handleClick = () => {
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.src = `/music/1/01.mp3`;
       audioRef.current.play();
       audioRef.current.volume = 0.1;
-    }
-    
+    } 
     setIsPlaying(!isPlaying);
   }
 
