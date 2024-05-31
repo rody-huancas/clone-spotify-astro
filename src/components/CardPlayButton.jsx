@@ -9,16 +9,25 @@ export const CardPlayButton = ({ id }) => {
     setCurrentMusic
   } = usePlayerStore((state) => state);
 
-  const handleClick = () => {
-    setCurrentMusic({
-      playlist: {
-        id,
-      },
-    });
-    setIsPlaying(!isPlaying);
-  };
-
   const isPlayingPlaylist = isPlaying && currentMusic?.playlist.id === id;
+
+  const handleClick = () => {
+    if (isPlayingPlaylist) {
+      setIsPlaying(!isPlaying);
+      return
+    }
+
+    fetch(`/api/get-info-playlist.json?id=${id}`)
+      .then(res => res.json())
+      .then((data) => {
+        const { songs, playlist } = data;
+
+        setIsPlaying(true);
+        setCurrentMusic({ songs, playlist, song: songs[0] });
+
+        console.log({ songs, playlist })
+      })
+  };
 
   return (
     <button
